@@ -1,0 +1,179 @@
+type http_request_result = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type http_header = 
+ record {
+   name: text;
+   value: text;
+ };
+type _ImmutableObjectStorageRefillResult = 
+ record {
+   success: opt bool;
+   topped_up_amount: opt nat;
+ };
+type _ImmutableObjectStorageRefillInformation = record {
+                                                  proposed_top_up_amount:
+                                                   opt nat;};
+type _ImmutableObjectStorageCreateCertificateResult = 
+ record {
+   blob_hash: text;
+   method: text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserId = principal;
+type UpdateSummaryInput = 
+ record {
+   id: SummaryId;
+   summaryText: text;
+ };
+type UpdateFirStatusInput = 
+ record {
+   id: FirId;
+   status: FirStatus;
+ };
+type UpdateCaseInput = 
+ record {
+   caseNumber: opt text;
+   id: CaseId;
+   status: opt CaseStatus;
+   title: opt text;
+ };
+type TransformationOutput = 
+ record {
+   body: blob;
+   headers: vec http_header;
+   status: nat;
+ };
+type TransformationInput = 
+ record {
+   context: blob;
+   response: http_request_result;
+ };
+type Timestamp = int;
+type SummaryView = 
+ record {
+   firId: FirId;
+   generatedDate: Timestamp;
+   id: SummaryId;
+   lastEditedBy: opt UserId;
+   lastEditedDate: opt Timestamp;
+   summaryText: text;
+ };
+type SummaryId = nat;
+type SaveSummaryInput = 
+ record {
+   firId: FirId;
+   summaryText: text;
+ };
+type OffenseType = text;
+type LinkFirInput = 
+ record {
+   caseId: CaseId;
+   firId: FirId;
+ };
+type FirStatus = 
+ variant {
+   pending_summary;
+   summarizing;
+   summary_failed;
+   summary_ready;
+ };
+type FirRecordView = 
+ record {
+   caseId: opt CaseId;
+   caseTitle: text;
+   complainantName: text;
+   dateOfIncident: Timestamp;
+   document: ExternalBlob;
+   documentFilename: text;
+   firNumber: text;
+   id: FirId;
+   offenseType: OffenseType;
+   status: FirStatus;
+   uploadDate: Timestamp;
+   uploadedBy: UserId;
+ };
+type FirId = nat;
+type FirFilter = 
+ record {
+   caseId: opt CaseId;
+   fromDate: opt Timestamp;
+   status: opt FirStatus;
+   toDate: opt Timestamp;
+ };
+type ExternalBlob = blob;
+type CreateFirInput = 
+ record {
+   caseId: opt CaseId;
+   caseTitle: text;
+   complainantName: text;
+   dateOfIncident: Timestamp;
+   document: ExternalBlob;
+   documentFilename: text;
+   firNumber: text;
+   offenseType: OffenseType;
+ };
+type CreateCaseInput = 
+ record {
+   caseNumber: text;
+   title: text;
+ };
+type CaseView = 
+ record {
+   caseNumber: text;
+   createdBy: UserId;
+   createdDate: Timestamp;
+   firIds: vec FirId;
+   id: CaseId;
+   status: CaseStatus;
+   title: text;
+ };
+type CaseStatus = 
+ variant {
+   chargeshed;
+   closed;
+   open;
+   under_investigation;
+ };
+type CaseId = nat;
+service : {
+  _immutableObjectStorageBlobsAreLive: (hashes: vec blob) -> (vec bool) query;
+  _immutableObjectStorageBlobsToDelete: () -> (vec blob) query;
+  _immutableObjectStorageConfirmBlobDeletion: (blobs: vec blob) -> ();
+  _immutableObjectStorageCreateCertificate: (blobHash: text) ->
+   (_ImmutableObjectStorageCreateCertificateResult);
+  _immutableObjectStorageRefillCashier: (refillInformation:
+   opt _ImmutableObjectStorageRefillInformation) ->
+   (_ImmutableObjectStorageRefillResult);
+  _immutableObjectStorageUpdateGatewayPrincipals: () -> ();
+  _initializeAccessControl: () -> ();
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  createCase: (input: CreateCaseInput) -> (CaseView);
+  createFir: (input: CreateFirInput) -> (FirRecordView);
+  deleteFir: (id: FirId) -> (bool);
+  getCallerUserRole: () -> (UserRole) query;
+  getCase: (id: CaseId) -> (opt CaseView) query;
+  getFir: (id: FirId) -> (opt FirRecordView) query;
+  getSummary: (id: SummaryId) -> (opt SummaryView) query;
+  getSummaryByFirId: (firId: FirId) -> (opt SummaryView) query;
+  isCallerAdmin: () -> (bool) query;
+  linkFirToCase: (input: LinkFirInput) -> (bool);
+  listCases: () -> (vec CaseView) query;
+  listFirs: () -> (vec FirRecordView) query;
+  listFirsFiltered: (filter: FirFilter) -> (vec FirRecordView) query;
+  listSummaries: () -> (vec SummaryView) query;
+  saveSummary: (input: SaveSummaryInput) -> (SummaryView);
+  transform: (input: TransformationInput) -> (TransformationOutput) query;
+  triggerFirSummarization: (firId: FirId) -> (text);
+  updateCase: (input: UpdateCaseInput) -> (bool);
+  updateFirStatus: (input: UpdateFirStatusInput) -> (bool);
+  updateSummary: (input: UpdateSummaryInput) -> (bool);
+}

@@ -1,0 +1,91 @@
+// Version: 1.0.0
+type CaseId__475917969 = Nat;
+type CaseStatus__809767907 =
+  {#chargeshed; #closed; #open; #under_investigation};
+type Case__874865401 =
+  {
+    var caseNumber : Text;
+    createdBy : UserId__158757552;
+    createdDate : Timestamp__301639476;
+    var firIds : [FirId__561455353];
+    id : CaseId__475917969;
+    var status : CaseStatus__809767907;
+    var title : Text
+  };
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type ExternalBlob__671167343 = Blob;
+type FirId__561455353 = Nat;
+type FirRecord__169813609 =
+  {
+    caseId : ?CaseId__475917969;
+    caseTitle : Text;
+    complainantName : Text;
+    dateOfIncident : Timestamp__301639476;
+    document : ExternalBlob__671167343;
+    documentFilename : Text;
+    firNumber : Text;
+    id : FirId__561455353;
+    offenseType : OffenseType__310363034;
+    var status : FirStatus__517399748;
+    uploadDate : Timestamp__301639476;
+    uploadedBy : UserId__158757552
+  };
+type FirStatus__517399748 =
+  {#pending_summary; #summarizing; #summary_failed; #summary_ready};
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type OffenseType__310363034 = Text;
+type SummaryId__946781600 = Nat;
+type Summary__550599270 =
+  {
+    firId : FirId__561455353;
+    generatedDate : Timestamp__301639476;
+    id : SummaryId__946781600;
+    var lastEditedBy : ?UserId__158757552;
+    var lastEditedDate : ?Timestamp__301639476;
+    var summaryText : Text
+  };
+type Timestamp__301639476 = Int;
+type UserId__158757552 = Principal;
+type UserRole__1073662873 = {#admin; #guest; #user};
+actor {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1073662873>
+    };
+  stable cases :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Case__874865401]];
+      var elementIndex : Nat__490723111
+    };
+  stable firs :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?FirRecord__169813609]];
+      var elementIndex : Nat__490723111
+    };
+  stable var nextCaseId : Nat;
+  stable nextCaseIdRef : {var val : Nat};
+  stable var nextFirId : Nat;
+  stable nextFirIdRef : {var val : Nat};
+  stable var nextSummaryId : Nat;
+  stable nextSummaryIdRef : {var val : Nat};
+  stable summaries :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Summary__550599270]];
+      var elementIndex : Nat__490723111
+    }
+};

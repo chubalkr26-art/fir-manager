@@ -1,0 +1,23 @@
+{
+  "overview": "FIR Management System for Mokokchung Police Station — enables police personnel to upload FIR documents, auto-summarize content using AI, view and edit summaries, and export them for Word documents.",
+  "features": [
+    "FIR document upload with file validation and progress feedback",
+    "AI-powered summarization of FIR content",
+    "View and edit summaries with save confirmation",
+    "One-click copy of summary text for Word import",
+    "Case dashboard linking multiple FIRs",
+    "Role-based access for authorized police personnel",
+    "Upload history with date, status, and uploader tracking"
+  ],
+  "category": "productivity",
+  "tags": [
+    "police",
+    "fir",
+    "case-management",
+    "document-upload",
+    "ai-summarization",
+    "law-enforcement",
+    "mokokchung"
+  ],
+  "last_updated": "2026-04-25T02:37:21.785Z"
+}
